@@ -101,6 +101,8 @@ function onMouseDrag(event) {
 
         }
     }
+    event.preventDefault();
+    return false;
 }
 
 function onMouseClick(event) {
@@ -123,7 +125,8 @@ function onMouseClick(event) {
         }
 
     }
-    
+    event.preventDefault();
+    return false;
 }
 
 function flipDot(dot) {
