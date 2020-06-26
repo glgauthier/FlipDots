@@ -16,6 +16,9 @@ namespace FlipDots
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression();
+            services.AddRouting(options => options.LowercaseUrls = true);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -26,15 +29,22 @@ namespace FlipDots
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseResponseCompression();
             app.UseRouting();
+            app.UseStaticFiles();
 
-            app.UseEndpoints(endpoints =>
+            app.Use(async (context, next) =>
             {
-                endpoints.MapGet("/", async context =>
+                if(context.Request.Path.Value == "/")
                 {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                    context.Response.Redirect("/index.html");
+                    return;
+                }
+                // Do work that doesn't write to the Response.
+                await next.Invoke();
+                // Do logging or other work that doesn't write to the Response.
             });
+
         }
     }
 }
