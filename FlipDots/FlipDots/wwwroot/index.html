@@ -4,7 +4,18 @@
     <meta charset="utf-8" />
     <title></title>
 </head>
-<body>
+<body style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size:16px;">
+    <div id="3DViewer"></div>
+    <div id="Controls">
+        <input type="radio" id="orbit" name="orbit" value="orbit" onchange="toggleDrawOrbit()">
+        <label for="orbit">Orbit</label>
+        <input type="radio" id="draw" name="orbit" value="draw" checked onchange="toggleDrawOrbit()">
+        <label for="draw">Draw</label>
+        <button id="btnPenColor" class="drawCtl" onclick="togglePenColor()">Toggle Colors</button>
+        <canvas id="penColor" style="height:15px;width:15px;border:1px solid black;"> </canvas>
+        <button id="btnClearDisplay" class="drawCtl" onclick="clearDisplay()">Clear Display</button>
+
+    </div>
     <script src="/js/src/three.r118.min.js"></script>
     <script src="/js/src/three.r105.controls.orbitcontrols.js"></script>
     <script src="/js/flipDotViewer.js"></script>

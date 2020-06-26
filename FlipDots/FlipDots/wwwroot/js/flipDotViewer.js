@@ -1,6 +1,8 @@
-﻿const renderer = new THREE.WebGLRenderer();
+﻿let drawMode = true;
+
+const renderer = new THREE.WebGLRenderer();
 renderer.setSize(1000, 500);
-document.body.appendChild(renderer.domElement);
+document.getElementById("3DViewer").appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x616161);
@@ -96,7 +98,7 @@ function onMouseDrag(event) {
                 if (lastDot == intersects[i].object)
                     return;
                 lastDot = intersects[i].object;
-                flipDot(intersects[i].object);
+                setDot(intersects[i].object);
             }
 
         }
@@ -130,7 +132,26 @@ function onMouseClick(event) {
 }
 
 function flipDot(dot) {
+    if (!drawMode) return;
     if (dot.rotation.x == Math.PI) {
+        dot.rotation.set(0, 0, 0);
+    } else {
+        dot.rotation.set(Math.PI, 0, 0);
+    }
+}
+
+function setDot(dot) {
+    if (!drawMode) return;
+    if (!whitePen) {
+        dot.rotation.set(0, 0, 0);
+    } else {
+        dot.rotation.set(Math.PI, 0, 0);
+    }
+}
+
+function clearDot(dot) {
+    if (!drawMode) return;
+    if (whitePen) {
         dot.rotation.set(0, 0, 0);
     } else {
         dot.rotation.set(Math.PI, 0, 0);
@@ -139,3 +160,42 @@ function flipDot(dot) {
 
 window.addEventListener('mousemove', onMouseDrag, false);
 window.addEventListener('mousedown', onMouseClick, false);
+
+let whitePen = true;
+function togglePenColor() {
+    whitePen = !whitePen;
+    var c = document.getElementById("penColor");
+    var ctx = c.getContext("2d");
+
+    ctx.beginPath();
+    ctx.rect(0, 0, 1000, 600);
+    ctx.fillStyle = whitePen ? "white" :"black";
+    ctx.fill();
+
+    toggleWhiteBlack()
+}
+
+togglePenColor(); //defalt to flipping dots over from white
+toggleWhiteBlack();
+
+function clearDisplay() {
+    scene.children.forEach(c => { if (c.name == "dot") clearDot(c);})
+}
+
+function toggleWhiteBlack() {
+    scene.children.forEach(c => { if (c.name == "dot") flipDot(c); })
+}
+
+function toggleDrawOrbit() {
+    let orbitMode = document.querySelector('input[name="orbit"]:checked').value;
+    if (orbitMode == "draw") {
+        drawMode = true;
+        controls.enabled = false;
+        document.querySelectorAll(".drawCtl").forEach(e => e.disabled = false);
+    }
+    else {
+        drawMode = false;
+        controls.enabled = true;
+        document.querySelectorAll(".drawCtl").forEach(e => e.disabled = true);
+    }
+}
